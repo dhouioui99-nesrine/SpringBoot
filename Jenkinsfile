@@ -5,7 +5,7 @@ pipeline {
         DOCKERHUB_USERNAME = "nesrinedh"
         DOCKERHUB_PASSWORD = credentials('dockerhub-pass')
         SONAR_HOST_URL = "http://sonarqube:9000"
-        SONAR_LOGIN = credentials('squ_21e9f34946228a3a819e0581dba92ee1644582fe')
+        SONAR_LOGIN = credentials('SonarQube')
     }
 
     stages {
