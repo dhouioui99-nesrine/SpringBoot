@@ -17,7 +17,7 @@ pipeline {
         
         stage('Checkout') {
             steps {
-                git branch: 'master', url: 'https://github.com/dhouioui99-nesrine/SpringBoot.git'
+                checkout scm
             }
         }
     
