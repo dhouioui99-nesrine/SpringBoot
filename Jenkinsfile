@@ -14,11 +14,13 @@ pipeline {
     }
 
     stages {
+        
         stage('Checkout') {
             steps {
-                git 'https://github.com/dhouioui99-nesrine/SpringBoot.git'
+                git branch: 'master', url: 'https://github.com/dhouioui99-nesrine/SpringBoot.git'
             }
         }
+    
 
         stage('Build & Test') {
             steps {
