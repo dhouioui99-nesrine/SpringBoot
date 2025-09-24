@@ -2,15 +2,16 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_USERNAME = "tonuser"
+        DOCKERHUB_USERNAME = "nesrinedh"
+        DOCKERHUB_PASSWORD = credentials('dockerhub-pass')
         SONAR_HOST_URL = "http://sonarqube:9000"
-        SONAR_LOGIN = credentials('sonar-token')
+        SONAR_LOGIN = credentials('squ_21e9f34946228a3a819e0581dba92ee1644582fe')
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/tonrepo/backend-ctt.git'
+                git 'https://github.com/dhouioui99-nesrine/SpringBoot.git'
             }
         }
 
