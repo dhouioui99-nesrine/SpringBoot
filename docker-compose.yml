@@ -30,7 +30,19 @@ services:
         condition: service_healthy
     networks:
       - app-network
-
+# SonarQube
+  sonarqube:
+    image: sonarqube:latest
+    container_name: sonarqube
+    ports:
+      - "9001:9000"  # port externe:port interne (ici externe 9001)
+    environment:
+      SONAR_ES_BOOTSTRAP_CHECKS_DISABLE: "true"
+      SONAR_JDBC_URL: jdbc:mysql://mysql-db:3306/otbs?useSSL=false
+      SONAR_JDBC_USERNAME: root
+      SONAR_JDBC_PASSWORD: root
+    depends_on:
+      - mysql-db
 networks:
   app-network:
     driver: bridge
