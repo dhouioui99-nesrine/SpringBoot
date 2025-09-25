@@ -1,5 +1,5 @@
 # Utiliser une image JDK
-FROM eclipse-temurin:21-jdk-alpine
+FROM maven:3.9.9-eclipse-temurin-21-alpine
 
 # Définir le répertoire de travail
 WORKDIR /app
