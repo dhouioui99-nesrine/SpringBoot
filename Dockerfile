@@ -1,10 +1,22 @@
-FROM eclipse-temurin:21-jdk AS build
-WORKDIR /app
-COPY . .
-RUN ./mvnw clean package -DskipTests
+# Utiliser une image JDK
+FROM eclipse-temurin:21-jdk-alpine
 
-FROM eclipse-temurin:21-jre
+# Définir le répertoire de travail
 WORKDIR /app
-COPY --from=build /app/target/*.jar app.jar
+
+# Copier le pom et télécharger les dépendances (cache Maven)
+COPY pom.xml .
+RUN mkdir -p src && echo "" > src/placeholder.txt
+RUN mvn dependency:go-offline -B
+
+# Copier le reste du projet
+COPY . .
+
+# Construire le projet
+RUN mvn clean package -DskipTests
+
+# Exposer le port de l'application
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","app.jar"]
+
+# Lancer l'application
+CMD ["java", "-jar", "target/IntegrationAPI-0.0.1-SNAPSHOT.jar"]
