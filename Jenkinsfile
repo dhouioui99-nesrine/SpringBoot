@@ -9,8 +9,8 @@ pipeline {
     environment {
         DOCKERHUB_USERNAME = "nesrinedh"
         DOCKERHUB_PASSWORD = credentials('dockerhub-pass')
-        SONAR_HOST_URL = "http://SonarQube:9000"
-        SONAR_LOGIN = credentials('SonarQube')
+         SONAR_HOST_URL = "http://172.20.0.2:9000"
+         SONAR_LOGIN = credentials('SonarQube')
     }
 
     stages {
@@ -31,7 +31,8 @@ pipeline {
         stage('SonarQube Analysis') {
         steps {
             withSonarQubeEnv('SonarQube') {
-                sh 'mvn clean package sonar:sonar -Dsonar.projectKey=backend -DskipTests'
+               sh 'mvn clean package sonar:sonar -Dsonar.projectKey=backend -DskipTests -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_LOGIN'
+
             }
         }
     }
