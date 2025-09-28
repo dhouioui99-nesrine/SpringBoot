@@ -29,12 +29,12 @@ pipeline {
         }
 
         stage('SonarQube Analysis') {
-            steps {
-                withSonarQubeEnv('SonarQube') {
-                    sh 'mvn sonar:sonar -Dsonar.projectKey=backend-ctt'
-                }
+        steps {
+            withSonarQubeEnv('SonarQube') {
+                sh 'mvn clean package sonar:sonar -Dsonar.projectKey=backend-ctt -DskipTests'
             }
         }
+    }
 
         stage('Docker Build & Push') {
             steps {
