@@ -9,7 +9,7 @@ pipeline {
     environment {
         DOCKERHUB_USERNAME = "nesrinedh"
         DOCKERHUB_PASSWORD = credentials('dockerhub-pass')
-        SONAR_HOST_URL = "http://sonarqube:9001"
+        SONAR_HOST_URL = "http://sonarqube:9000"
         SONAR_LOGIN = credentials('SonarQube')
     }
 
@@ -31,7 +31,7 @@ pipeline {
         stage('SonarQube Analysis') {
         steps {
             withSonarQubeEnv('SonarQube') {
-                sh 'mvn clean package sonar:sonar -Dsonar.projectKey=backend-ctt -DskipTests'
+                sh 'mvn clean package sonar:sonar -Dsonar.projectKey=IntegrationAPI -DskipTests'
             }
         }
     }
@@ -39,9 +39,9 @@ pipeline {
         stage('Docker Build & Push') {
             steps {
                 sh '''
-                    docker build -t $DOCKERHUB_USERNAME/backend-ctt:latest .
+                    docker build -t $DOCKERHUB_USERNAME/backend:latest .
                     echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
-                    docker push $DOCKERHUB_USERNAME/backend-ctt:latest
+                    docker push $DOCKERHUB_USERNAME/backend:latest
                 '''
             }
         }
