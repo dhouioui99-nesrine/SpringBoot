@@ -31,7 +31,7 @@ pipeline {
         stage('SonarQube Analysis') {
         steps {
             withSonarQubeEnv('SonarQube') {
-                sh 'mvn clean package sonar:sonar -Dsonar.projectKey=IntegrationAPI -DskipTests'
+                sh 'mvn clean package sonar:sonar -Dsonar.projectKey=backend -DskipTests'
             }
         }
     }
