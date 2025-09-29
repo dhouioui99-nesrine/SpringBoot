@@ -5,8 +5,9 @@ pipeline {
             args '-v /root/.m2:/root/.m2 --network springboot_app-network'
         }
     }
-def DOCKER_IMAGE = "nesrinedh/backend:latest"
+
     environment {
+        DOCKER_IMAGE = "nesrinedh/backend:latest"
         DOCKERHUB_USERNAME = "nesrinedh"
         DOCKERHUB_PASSWORD = credentials('dockerhub-pass')
          SONAR_HOST_URL = "http://sonarqube:9000"
