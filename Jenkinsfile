@@ -37,18 +37,19 @@ pipeline {
         }
     }
 
-          stage('Docker Build & Push') {
-            // Injection des identifiants DockerHub
-            withCredentials([usernamePassword(
-                credentialsId: 'dockerhub-pass', 
-                usernameVariable: 'nesrinedh', 
-                passwordVariable: 'dckr_pat_ba1jYsIJrhzVG51s8H4CzHz0RE8'
-            )]) {
-                sh """
-                    docker build -t $DOCKER_IMAGE .
-                    echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
-                    docker push $DOCKER_IMAGE
-                """
+           stage('Docker Build & Push') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-pass', 
+                    usernameVariable: 'DOCKER_USERNAME', 
+                    passwordVariable: 'DOCKER_PASSWORD'
+                )]) {
+                    sh """
+                        docker build -t $DOCKER_IMAGE .
+                        echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+                        docker push $DOCKER_IMAGE
+                    """
+                }
             }
         }
     }
