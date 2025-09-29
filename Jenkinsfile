@@ -30,7 +30,7 @@ pipeline {
 
         stage('SonarQube Analysis') {
         steps {
-            withSonarQubeEnv('sonarqube') {
+            withSonarQubeEnv('SonarQube') {
                sh 'mvn clean package sonar:sonar -Dsonar.projectKey=backend -DskipTests -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_LOGIN'
 
             }
