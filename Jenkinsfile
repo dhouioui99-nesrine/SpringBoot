@@ -5,7 +5,7 @@ pipeline {
             args '-v /root/.m2:/root/.m2 --network springboot_app-network'
         }
     }
-
+def DOCKER_IMAGE = "nesrinedh/backend:latest"
     environment {
         DOCKERHUB_USERNAME = "nesrinedh"
         DOCKERHUB_PASSWORD = credentials('dockerhub-pass')
