@@ -37,20 +37,23 @@ pipeline {
         }
     }
 
-           stage('Docker Build & Push') {
-            steps {
-                withCredentials([usernamePassword(
-                    credentialsId: 'dockerhub-pass', 
-                    usernameVariable: 'DOCKER_USERNAME', 
-                    passwordVariable: 'DOCKER_PASSWORD'
-                )]) {
-                    sh """
-                        docker build -t $DOCKER_IMAGE .
-                        echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
-                        docker push $DOCKER_IMAGE
-                    """
-                }
+         stage('Docker Build & Push') {
+    steps {
+        withCredentials([usernamePassword(
+            credentialsId: 'dockerhub-pass', 
+            usernameVariable: 'DOCKER_USERNAME', 
+            passwordVariable: 'DOCKER_PASSWORD'
+        )]) {
+            script {
+                def DOCKER_IMAGE = "nesrinedh/backend:latest"
+                sh """
+                    docker build -t $DOCKER_IMAGE .
+                    echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+                    docker push $DOCKER_IMAGE
+                """
             }
         }
+    }
+}
     }
 }
