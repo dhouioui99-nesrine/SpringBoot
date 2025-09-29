@@ -9,7 +9,7 @@ pipeline {
     environment {
         DOCKERHUB_USERNAME = "nesrinedh"
         DOCKERHUB_PASSWORD = credentials('dockerhub-pass')
-         SONAR_HOST_URL = "http://172.20.0.2:9000"
+         SONAR_HOST_URL = "http://sonarqube:9000"
          SONAR_LOGIN = credentials('sonarqube')
     }
 
