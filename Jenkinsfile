@@ -1,47 +1,30 @@
 pipeline {
-    agent {
-        docker {
-            image 'maven:3.9.9-eclipse-temurin-21' 
-            args '-v /root/.m2:/root/.m2 -v /var/run/docker.sock:/var/run/docker.sock --network springboot_app-network'
-        }
-    }
-
+    agent none
     environment {
         DOCKER_IMAGE = "nesrinedh/backend:latest"
-        DOCKERHUB_USERNAME = "nesrinedh"
-        DOCKERHUB_PASSWORD = credentials('dockerhub-pass')
         SONAR_HOST_URL = "http://sonarqube:9000"
         SONAR_LOGIN = credentials('sonarqube')
     }
-
     stages {
-        stage('Checkout') {
+        stage('Build & SonarQube') {
+            agent {
+                docker { image 'maven:3.9.9-eclipse-temurin-21' }
+            }
             steps {
                 checkout scm
-            }
-        }
-
-        stage('Build & Test') {
-            steps {
                 sh 'mvn clean package -DskipTests'
-            }
-        }
-
-        stage('SonarQube Analysis') {
-            steps {
                 withSonarQubeEnv('SonarQube') {
-                    sh 'mvn clean package sonar:sonar -Dsonar.projectKey=backend -DskipTests -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_LOGIN'
+                    sh 'mvn sonar:sonar -Dsonar.projectKey=backend -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_LOGIN'
                 }
             }
         }
 
         stage('Docker Build & Push') {
+            agent {
+                docker { image 'docker:24.0.2-dind' args '--privileged -v /var/run/docker.sock:/var/run/docker.sock' }
+            }
             steps {
-                withCredentials([usernamePassword(
-                    credentialsId: 'dockerhub-pass', 
-                    usernameVariable: 'DOCKER_USERNAME', 
-                    passwordVariable: 'DOCKER_PASSWORD'
-                )]) {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-pass', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                     sh """
                         docker build -t $DOCKER_IMAGE .
                         echo \$DOCKER_PASSWORD | docker login -u \$DOCKER_USERNAME --password-stdin
