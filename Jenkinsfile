@@ -21,10 +21,11 @@ pipeline {
 
        stage('Docker Build & Push') {
     agent {
-        docker(
-            image: 'docker:24.0.2-dind',
-            args: '--privileged -v /var/run/docker.sock:/var/run/docker.sock'
-        )
+      docker {
+        image 'maven:3.9.9-eclipse-temurin-21'
+        args '--network springboot_app-network'
+    }
+
     }
     steps {
         withCredentials([usernamePassword(
