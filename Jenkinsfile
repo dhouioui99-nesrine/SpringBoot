@@ -23,13 +23,12 @@ pipeline {
             }
         }
 
-       stage('Docker Build & Push') {
+    stage('Docker Build & Push') {
     agent {
-      docker {
-        image 'maven:3.9.9-eclipse-temurin-21'
-        args '--network springboot_app-network'
-    }
-
+        docker {
+            image 'docker:24.0.2-dind'
+            args '--network springboot_app-network --privileged -v /var/run/docker.sock:/var/run/docker.sock'
+        }
     }
     steps {
         withCredentials([usernamePassword(
