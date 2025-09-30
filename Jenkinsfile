@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'maven:3.9.9-eclipse-temurin-21' 
-            args '-v /root/.m2:/root/.m2 --network springboot_app-network'
+            args '-v /root/.m2:/root/.m2 -v /var/run/docker.sock:/var/run/docker.sock --network springboot_app-network'
         }
     }
 
@@ -10,18 +10,16 @@ pipeline {
         DOCKER_IMAGE = "nesrinedh/backend:latest"
         DOCKERHUB_USERNAME = "nesrinedh"
         DOCKERHUB_PASSWORD = credentials('dockerhub-pass')
-         SONAR_HOST_URL = "http://sonarqube:9000"
-         SONAR_LOGIN = credentials('sonarqube')
+        SONAR_HOST_URL = "http://sonarqube:9000"
+        SONAR_LOGIN = credentials('sonarqube')
     }
 
     stages {
-        
         stage('Checkout') {
             steps {
                 checkout scm
             }
         }
-    
 
         stage('Build & Test') {
             steps {
@@ -30,15 +28,14 @@ pipeline {
         }
 
         stage('SonarQube Analysis') {
-        steps {
-            withSonarQubeEnv('SonarQube') {
-               sh 'mvn clean package sonar:sonar -Dsonar.projectKey=backend -DskipTests -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_LOGIN'
-
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    sh 'mvn clean package sonar:sonar -Dsonar.projectKey=backend -DskipTests -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_LOGIN'
+                }
             }
         }
-    }
 
-  stage('Docker Build & Push') {
+        stage('Docker Build & Push') {
             steps {
                 withCredentials([usernamePassword(
                     credentialsId: 'dockerhub-pass', 
@@ -47,12 +44,11 @@ pipeline {
                 )]) {
                     sh """
                         docker build -t $DOCKER_IMAGE .
-                        echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+                        echo \$DOCKER_PASSWORD | docker login -u \$DOCKER_USERNAME --password-stdin
                         docker push $DOCKER_IMAGE
                     """
                 }
             }
         }
- 
     }
 }
