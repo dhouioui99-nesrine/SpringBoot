@@ -8,7 +8,10 @@ pipeline {
     stages {
         stage('Build & SonarQube') {
             agent {
-                docker { image 'maven:3.9.9-eclipse-temurin-21' }
+                docker {
+                    image 'maven:3.9.9-eclipse-temurin-21'
+                    args '--network springboot_app-network'
+                }
             }
             steps {
                 checkout scm
